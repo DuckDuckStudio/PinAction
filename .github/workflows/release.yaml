@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: 设置 .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: 10.x
+
+      - name: 发布
+        run: dotnet publish PinAction --configuration Release
+
+      - name: 打包安装程序
+        run: iscc installer.iss
+
+      - name: 上传构建文件
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          path: Release/PinAction_Setup.exe
+
+      - name: 发布至发行版
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        run: gh release upload "Release/PinAction_Setup.exe" "$env:GITHUB_REF_NAME" --clobber
