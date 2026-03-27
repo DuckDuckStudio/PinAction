@@ -1,6 +1,6 @@
 [Setup]
 AppName=PinAction
-AppVersion=1.0.0
+AppVersion=1.0.1
 DefaultDirName={pf}\DuckStudio\PinAction
 VersionInfoCopyright=版权所有 (c) 2026 鸭鸭「カモ」
 LicenseFile=LICENSE.txt
