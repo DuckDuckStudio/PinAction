@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DuckStudio.CatFood" Version="2.0.0" />
+    <PackageReference Include="DuckStudio.CatFood" Version="2.0.0.1" />
     <PackageReference Include="Octokit" Version="14.0.0" />
   </ItemGroup>
 
