@@ -27,7 +27,7 @@ winget install --id DuckStudio.PinAction -s winget -e
 #### Clone repository
 
 ```shell
-git clone https://github.com/DuckDuckStudio/PinAction.git
+git clone https://github.com/DuckDuckStudio/PinAction.git # Add the "-b <version>" parameter to specify the version
 cd PinAction/
 ```
 

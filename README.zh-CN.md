@@ -27,7 +27,7 @@ winget install --id DuckStudio.PinAction -s winget -e
 #### 克隆仓库
 
 ```shell
-git clone https://github.com/DuckDuckStudio/PinAction.git
+git clone https://github.com/DuckDuckStudio/PinAction.git # 添加 "-b <版本号>" 参数指定版本
 cd PinAction/
 ```
 
