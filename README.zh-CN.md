@@ -6,22 +6,101 @@
 
 ![使用示例](example.gif)
 
-## 如何使用
+## 安装
+### Windows
 
-你可以通过 winget 安装:  
+[当更新拉取请求发布后](https://github.com/microsoft/winget-pkgs/issues?q=type%3Apr%20author%3ADuckDuckStudio%20%22DuckStudio.PinAction%22)，你可以通过 winget 安装:  
 
-```bash
+```shell
 winget install --id DuckStudio.PinAction -s winget -e
 ```
 
-然后运行:
+<details>
+<summary>Linux</summary>
 
+### Linux
+
+> 我使用 [WSL2 Ubuntu](https://ubuntu.com/desktop/wsl) + [fish shell](https://fishshell.com/) + [bash](http://www.gnu.org/software/bash)。  
+> 你可以使用任意你喜欢的编辑器而不只限于 [nano](https://www.nano-editor.org/)。  
+> 在继续前，请先[安装 .NET 10 SDK](https://learn.microsoft.com/zh-cn/dotnet/core/install/linux)。
+
+#### 克隆仓库
+
+```shell
+git clone https://github.com/DuckDuckStudio/PinAction.git
+cd PinAction/
+```
+
+#### 生成项目
+
+> [!TIP]  
+> 你不一定要严格按照这里给出的示例，参阅 [`dotnet publish` 命令文档](https://learn.microsoft.com/zh-cn/dotnet/core/tools/dotnet-publish)可以组合出新的命令。
+
+这里的示例使用 Release 生成配置，指定目标操作系统 linux，单文件，自包含运行时。
+
+```shell
+dotnet publish PinAction --configuration Release --os linux -p:PublishSingleFile=true --self-contained
+
+# 对于喜欢用小写的人
+mv "PinAction/bin/Release/net10.0/linux-x64/publish/PinAction" "PinAction/bin/Release/net10.0/linux-x64/publish/pinaction"
+```
+
+#### 添加到 PATH
+
+> 请将代码中的路径替换为你实际发布文件夹的路径。  
+
+对于 fish:
+```shell
+nano ~/.config/fish/config.fish
+# 添加以下代码
+# set -gx PATH "/path/to/repo/PinAction/PinAction/bin/Release/net10.0/linux-x64/publish/" $PATH
+```
+
+对于 bash:
 ```bash
-pinaction <文件或目录>
+nano ~/.bashrc
+# 添加以下代码
+# export PATH="/path/to/repo/PinAction/PinAction/bin/Release/net10.0/linux-x64/publish/:$PATH"
+```
+
+然后用 `source` 命令重新加载配置。
+
+#### 添加 fish shell 自动补全
+
+> `complete` 命令文档: https://fishshell.com/docs/current/cmds/complete.html
+
+```shell
+touch ~/.config/fish/completions/pinaction.fish
+nano ~/.config/fish/completions/pinaction.fish
+```
+
+添加以下内容
+
+> [!NOTE]  
+> 如果你前面将命令修改为了全小写，请将这里的命令也修改为小写。
+
+```shell
+# DuckStudio.PinAction
+# https://github.com/DuckDuckStudio/PinAction/blob/main/README.zh-CN.md
+
+# 基础选项 (使用 --xxx 风格，其他别名请见 pinaction --help)
+complete -c PinAction -l help      -d "显示帮助信息"
+complete -c PinAction -l version   -d "显示版本号"
+complete -c PinAction -l license   -d "显示许可信息"
+```
+
+</details>
+
+## 使用
+
+```shell
+pinaction "<文件或目录>"
 ```
 
 你可以同时传递多个文件或目录。  
-对于目录，它会尝试递归查找其中的 `.yaml` 或 `.yml` 文件。
+对于目录，它会尝试递归查找其中的 `.yaml` 或 `.yml` 文件。  
+
+运行 `pinaction --help` 获取更多帮助信息。
 
 ## 一些问题
 ### 它支持使用 GitHub Token 吗？
