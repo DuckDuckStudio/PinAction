@@ -3,8 +3,8 @@ using Spectre.Console;
 using PinAction.Resources;
 using System.Globalization;
 using DuckStudio.CatFood.Functions;
-using System.Text.RegularExpressions;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 
 namespace PinAction
 {
@@ -22,7 +22,10 @@ namespace PinAction
                 (
                     // 单独提供帮助相关参数
                     (args.Length == 1) &&
-                    (args[0] is "help" or "--help" or "-h" or "/?")
+                    (args[0] is "help"
+                             or "--help"
+                             or "-h"
+                             or "/?")
                 )
             )
             {
@@ -31,10 +34,9 @@ namespace PinAction
                 Console.WriteLine(Strings.HelpLine1);
                 Console.WriteLine(Strings.HelpLine2);
                 Console.WriteLine();
-                Console.WriteLine(Strings.HelpGeneralCommands);
-                Console.WriteLine($"    {Strings.HelpShowVersion}: pinaction ver");
-                Console.WriteLine($"    {Strings.HelpShowLicense}: pinaction license");
-                Console.WriteLine($"    {Strings.HelpShowHelp}: pinaction --help");
+                Console.WriteLine($"-v ver --ver --version   {Strings.HelpShowVersion}");
+                Console.WriteLine($"--license license        {Strings.HelpShowLicense}");
+                Console.WriteLine($"-h --help help /?        {Strings.HelpShowHelp}");
                 return 0;
             }
 
@@ -42,15 +44,16 @@ namespace PinAction
             {
                 switch (args[0])
                 {
-                    case "v":
-                    case "--version":
                     case "ver":
+                    case "--version":
+                    case "--ver":
                     case "-v":
                         AnsiConsole.MarkupLine($"PinAction {Strings.Version} [green]1.0.1[/] by [link=https://duckduckstudio.github.io/yazicbs.github.io/]鸭鸭「カモ」[/]");
                         Console.WriteLine();
                         AnsiConsole.MarkupLine(Strings.HelpVer2License);
                         return 0;
                     case "license":
+                    case "--license":
                         Table table = new Table()
                             .Border(TableBorder.Rounded)
                             .ShowRowSeparators();

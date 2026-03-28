@@ -133,15 +133,6 @@ namespace PinAction.Resources {
         }
         
         /// <summary>
-        ///   查找类似 General Commands 的本地化字符串。
-        /// </summary>
-        internal static string HelpGeneralCommands {
-            get {
-                return ResourceManager.GetString("HelpGeneralCommands", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 You can pass multiple files or directories at once. 的本地化字符串。
         /// </summary>
         internal static string HelpLine1 {

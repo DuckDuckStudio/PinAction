@@ -141,9 +141,6 @@
   <data name="Help" xml:space="preserve">
     <value>使用方法: pinaction &lt;目录/文件&gt;</value>
   </data>
-  <data name="HelpGeneralCommands" xml:space="preserve">
-    <value>一般命令</value>
-  </data>
   <data name="HelpLine1" xml:space="preserve">
     <value>你可以同时传递多个文件或目录</value>
   </data>

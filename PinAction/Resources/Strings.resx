@@ -149,10 +149,6 @@
     <value>Usage: pinaction &lt;dir/file&gt;</value>
     <comment>使用帮助</comment>
   </data>
-  <data name="HelpGeneralCommands" xml:space="preserve">
-    <value>General Commands</value>
-    <comment>一般命令帮助消息开头</comment>
-  </data>
   <data name="HelpLine1" xml:space="preserve">
     <value>You can pass multiple files or directories at once.</value>
     <comment>使用方法帮助信息第一行</comment>
