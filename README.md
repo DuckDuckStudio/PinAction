@@ -6,22 +6,101 @@ Pin workflow dependency versions to full-length hashes.
 
 ![Example use.](example.gif)
 
-## How to Use
+## Install
+### Windows
 
-You can install it via winget:  
+[When the pull request for new version is published](https://github.com/microsoft/winget-pkgs/issues?q=type%3Apr%20author%3ADuckDuckStudio%20%22DuckStudio.PinAction%22), you can install it via winget:  
 
-```bash
+```shell
 winget install --id DuckStudio.PinAction -s winget -e
 ```
 
-Then run:
+<details>
+<summary>Linux</summary>
 
+### Linux
+
+> I use [WSL2 Ubuntu](https://ubuntu.com/desktop/wsl) + [fish shell](https://fishshell.com/) + [bash](http://www.gnu.org/software/bash).  
+> You can use ANY editor you like, not just limited to [nano](https://www.nano-editor.org/).  
+> Before continuing, please [install the .NET 10 SDK](https://learn.microsoft.com/zh-cn/dotnet/core/install/linux).
+
+#### Clone repository
+
+```shell
+git clone https://github.com/DuckDuckStudio/PinAction.git # Add the "-b <version>" parameter to specify the version
+cd PinAction/
+```
+
+#### Compiles Pin Action
+
+> [!TIP]  
+> You DON'T necessarily have to strictly follow the examples given here; you can refer to the [`dotnet publish` command documentation](https://learn.microsoft.com/zh-cn/dotnet/core/tools/dotnet-publish) to combine new command.
+
+The example here uses the Release build configuration, specifying the target operating system as Linux, single file, and self-contained runtime.
+
+```shell
+dotnet publish PinAction --configuration Release --os linux -p:PublishSingleFile=true --self-contained
+
+# For those who like to use lowercase ...
+mv "PinAction/bin/Release/net10.0/linux-x64/publish/PinAction" "PinAction/bin/Release/net10.0/linux-x64/publish/pinaction"
+```
+
+#### Add to PATH
+
+> Please replace the path in the code with the path to your actual publish folder.  
+
+For fish:
+```shell
+nano ~/.config/fish/config.fish
+# Add the following code
+# set -gx PATH "/path/to/repo/PinAction/PinAction/bin/Release/net10.0/linux-x64/publish/" $PATH
+```
+
+For bash:
 ```bash
-pinaction <file or directory>
+nano ~/.bashrc
+# Add the following code
+# export PATH="/path/to/repo/PinAction/PinAction/bin/Release/net10.0/linux-x64/publish/:$PATH"
+```
+
+Then use the `source` command to reload the configuration.
+
+#### Add fish shell auto-completion
+
+> `complete` command documentation: https://fishshell.com/docs/current/cmds/complete.html
+
+```shell
+touch ~/.config/fish/completions/pinaction.fish
+nano ~/.config/fish/completions/pinaction.fish
+```
+
+Add the following content:
+
+> [!NOTE]  
+> If you changed the command to all lowercase earlier, please also change the command here to lowercase.
+
+```shell
+# DuckStudio.PinAction
+# https://github.com/DuckDuckStudio/PinAction/blob/main/README.zh-CN.md
+
+# General Commands (use "--xxx" style, for other aliases see "pinaction --help")
+complete -c PinAction -l help      -d "显示帮助信息"
+complete -c PinAction -l version   -d "显示版本号"
+complete -c PinAction -l license   -d "显示许可信息"
+```
+
+</details>
+
+## Usage
+
+```shell
+pinaction "<file or directory>"
 ```
 
 You can pass multiple files or directories at once.  
-For directories, it will recursively look for `.yaml` or `.yml` files within.
+For directories, it will recursively look for `.yaml` or `.yml` files within.  
+
+Run `pinaction --help` for more help information.
 
 ## Q & A
 ### Does it support using a GitHub Token?
