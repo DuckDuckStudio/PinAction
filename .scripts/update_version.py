@@ -29,11 +29,11 @@ def update_ver(root: str, path: str, old: str, new: str, max_matches: int = 1):
 
     for index, line in enumerate(lines):
         if old in line.rstrip("\n"):
-            new_line: str = line.replace(old, new, 1)
-            lines[index] = new_line
             matches += 1
+            new_line: str = line.replace(old, new, 1)
             # pylint: disable=C0301:line-too-long
             print(f"({matches}/{max_matches}) 匹配 {os.path.relpath(path, root)} 第 {index+1} 行: \"{lines[index].rstrip("\n")}\" -> \"{new_line.rstrip("\n")}\"")
+            lines[index] = new_line
 
         if matches == max_matches:
             break
