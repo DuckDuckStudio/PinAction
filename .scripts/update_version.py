@@ -57,7 +57,9 @@ def main(args: list[str]) -> int:
         print("使用方法: update_version.py <version>")
         return 1
 
-    version = args[0]
+    version: str = args[0].strip()
+    if not version:
+        raise ValueError("版本号不能为空")
     print(f"版本号: {version}")
 
     # os.path.dirname(__file__) -> .scripts/(update_version.py)
