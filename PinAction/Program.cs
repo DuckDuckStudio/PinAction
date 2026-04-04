@@ -48,7 +48,7 @@ namespace PinAction
                     case "--version":
                     case "--ver":
                     case "-v":
-                        AnsiConsole.MarkupLine($"PinAction {Strings.Version} [green]1.0.1[/] by [link=https://duckduckstudio.github.io/yazicbs.github.io/]鸭鸭「カモ」[/]");
+                        AnsiConsole.MarkupLine($"PinAction {Strings.Version} [green]develop[/] by [link=https://duckduckstudio.github.io/yazicbs.github.io/]鸭鸭「カモ」[/]");
                         Console.WriteLine();
                         AnsiConsole.MarkupLine(Strings.HelpVer2License);
                         return 0;
