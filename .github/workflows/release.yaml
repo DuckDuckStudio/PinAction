@@ -37,6 +37,8 @@ jobs:
 
       - name: 更新版本号
         shell: bash
+        env:
+          GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
         run: |-
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             version="${GITHUB_EVENT_INPUTS_VERSION#v}"
