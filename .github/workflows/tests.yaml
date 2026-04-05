@@ -1,0 +1,104 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  # 手动触发
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: 设置 .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: 10.x
+
+      - name: 发布
+        shell: pwsh
+        run: dotnet publish PinAction --configuration Release
+
+      - name: (Windows) 添加发布目录到 PATH
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: |-
+          $publishPath = Join-Path -Path (Get-Location) -ChildPath 'PinAction/bin/Release/net10.0'
+          echo "PATH=$publishPath;$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: (Linux) 添加发布目录到 PATH
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |-
+          echo "PATH=$(pwd)/PinAction/bin/Release/net10.0:$PATH" >> $GITHUB_ENV
+
+      - name: 测试 - help
+        shell: pwsh
+        run: PinAction --help
+
+      - name: 测试 - version
+        shell: pwsh
+        run: PinAction --version
+
+      - name: 测试 - license
+        shell: pwsh
+        run: PinAction --license
+
+      - name: 设置预期哈希
+        shell: pwsh
+        run: |
+          if ($env:RUNNER_OS -eq "Windows") {
+            # CRLF
+            echo "expected=67c666358a863dc30294efef391fd25363971bc82cc9c7b269a9e4ef1cef37ff" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          } else {
+            # LF
+            echo "expected=c19fbbedce4fa5a38d3cd534e4d8c1260e9cddddcf23900428dd5d34fb6fc075" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
+
+      - name: 测试 - 文件
+        shell: pwsh
+        run: |
+          PinAction "tests/file.yaml"
+          $actual = (Get-FileHash tests/file.yaml -Algorithm SHA256).Hash.ToLower()
+          if ($actual -ne $env:expected) {
+            Write-Host "哈希值不匹配!"
+            Write-Host "预期: $env:expected"
+            Write-Host "实际: $actual"
+            Get-Content tests/file.yaml
+            exit 1
+          } else {
+            Write-Host "哈希值匹配: $actual"
+          }
+          git restore "tests/file.yaml"
+
+      - name: 测试 - 目录
+        shell: pwsh
+        run: |
+          PinAction "tests"
+          $actual = (Get-FileHash tests/file.yaml -Algorithm SHA256).Hash.ToLower()
+          if ($actual -ne $env:expected) {
+            Write-Host "哈希值不匹配!"
+            Write-Host "预期: $env:expected"
+            Write-Host "实际: $actual"
+            Get-Content tests/file.yaml
+            exit 1
+          } else {
+            Write-Host "哈希值匹配: $actual"
+          }
+          git restore "tests"
