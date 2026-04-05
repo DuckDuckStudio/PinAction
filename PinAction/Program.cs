@@ -1,7 +1,6 @@
 ﻿using Octokit;
 using Spectre.Console;
 using PinAction.Resources;
-using System.Globalization;
 using DuckStudio.CatFood.Functions;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
@@ -48,9 +47,9 @@ namespace PinAction
                     case "--version":
                     case "--ver":
                     case "-v":
-                        AnsiConsole.MarkupLine($"PinAction {Strings.Version} [green]develop[/] by [link=https://duckduckstudio.github.io/yazicbs.github.io/]鸭鸭「カモ」[/]");
+                        Console.MarkupLine($"PinAction {Strings.Version} [green]develop[/] by [link=https://duckduckstudio.github.io/yazicbs.github.io/]鸭鸭「カモ」[/]");
                         Console.WriteLine();
-                        AnsiConsole.MarkupLine(Strings.HelpVer2License);
+                        Console.MarkupLine(Strings.HelpVer2License);
                         return 0;
                     case "license":
                     case "--license":
@@ -62,7 +61,7 @@ namespace PinAction
                         table.AddRow("Octokit", "[link=https://github.com/octokit/octokit.net/blob/main/LICENSE.txt]MIT License[/]");
                         table.AddRow("DuckStudio.CatFood", "[link=https://github.com/DuckDuckStudio/DuckStudio.CatFood/blob/main/LICENSE]Apache License 2.0[/]");
                         table.AddRow("Spectre.Console", "[link=https://github.com/spectreconsole/spectre.console/blob/main/LICENSE.md]MIT License[/]");
-                        AnsiConsole.Write(table);
+                        Console.Write(table);
                         return 0;
                 }
             }
@@ -94,7 +93,7 @@ namespace PinAction
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine(CultureInfo.CurrentCulture, $"{Print.MSHead.Error} {string.Format(Strings.ErrorPathNotExist, fullPath)}");
+                    Console.MarkupLine($"{Print.MSHead.Error} {string.Format(Strings.ErrorPathNotExist, AnsiMarkup.Escape(fullPath))}");
                     return 3;
                 }
             }
@@ -127,13 +126,13 @@ namespace PinAction
                         string repo = match.Groups[1].Value;
                         string tag = match.Groups[2].Value;
 
-                        AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.FindAction, Path.GetRelativePath(Environment.CurrentDirectory, path), Markup.Escape($"{repo}@{tag}"))}");
+                        Console.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.FindAction, AnsiMarkup.Escape(Path.GetRelativePath(Environment.CurrentDirectory, path)), AnsiMarkup.Escape($"{repo}@{tag}"))}");
 
                         // 在这里你可以定义排除哪些项
                         // 例如排除以 actions/ 开头的项（actions/*@*）
                         // if (repo.StartsWith("actions/"))
                         // {
-                        //     AnsiConsole.MarkupLine($"{Print.MSHead.Warning} 跳过 {repo}@{tag}，因为它是官方工作流");
+                        //     Console.MarkupLine($"{Print.MSHead.Warning} 跳过 {AnsiMarkup.Escape($"{repo}@{tag}")}，因为它是官方工作流");
                         //     continue;
                         // }
 
@@ -142,13 +141,13 @@ namespace PinAction
                         // 检查是否已经是哈希值（40个十六进制字符）
                         if (HashRegex().IsMatch(tag))
                         {
-                            AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.SkippingAlreadyPinnedHashes, Markup.Escape($"{repo}@{tag}"))}");
+                            Console.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.SkippingAlreadyPinnedHashes, AnsiMarkup.Escape($"{repo}@{tag}"))}");
                             continue;
                         }
                         // 检查仓库是否是 owner/repo 的格式
                         if (repo.Split('/').Length != 2)
                         {
-                            AnsiConsole.MarkupLine($"{Print.MSHead.Warning} {Markup.Escape(repo)} 看起来不像是仓库的格式，跳过 {Markup.Escape($"{repo}@{tag}")}");
+                            Console.MarkupLine($"{Print.MSHead.Warning} {AnsiMarkup.Escape(repo)} 看起来不像是仓库的格式，跳过 {AnsiMarkup.Escape($"{repo}@{tag}")}");
                             continue;
                         }
 
@@ -170,7 +169,7 @@ namespace PinAction
                                 }
                                 catch (AggregateException ex) when (ex.InnerException != null)
                                 {
-                                    AnsiConsole.Markup($"{Print.MSHead.Warning} {Strings.ErrorGetHashFailed}");
+                                    Console.Markup($"{Print.MSHead.Warning} {Strings.ErrorGetHashFailed}");
 
                                     switch (ex.InnerException)
                                     {
@@ -189,7 +188,7 @@ namespace PinAction
                                                 continue;
                                             }
                                         case Octokit.RateLimitExceededException:
-                                            AnsiConsole.MarkupLine($"[yellow]{Strings.ErrorRateLimitExceeded}[/]");
+                                            Console.MarkupLine($"[yellow]{Strings.ErrorRateLimitExceeded}[/]");
                                             return false;
                                         default:
                                             AnsiConsole.MarkupLineInterpolated($"[red]{ex.InnerException.Message}[/]");
@@ -201,7 +200,7 @@ namespace PinAction
 #if DEBUG
                         else
                         {
-                            AnsiConsole.MarkupLine($"{Print.MSHead.Debug} 读取缓存 {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
+                            Console.MarkupLine($"{Print.MSHead.Debug} 读取缓存 {AnsiMarkup.Escape($"{repo}@{hash}")} # {AnsiMarkup.Escape(tag)}");
                         }
 #endif
 
@@ -220,7 +219,7 @@ namespace PinAction
                             }
                         }
 
-                        AnsiConsole.MarkupLine($"{Print.MSHead.Success} {Strings.Pinned} {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
+                        Console.MarkupLine($"{Print.MSHead.Success} {Strings.Pinned} {AnsiMarkup.Escape($"{repo}@{hash}")} # {AnsiMarkup.Escape(tag)}");
                     }
                 }
             }

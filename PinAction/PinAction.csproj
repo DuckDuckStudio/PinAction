@@ -25,8 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DuckStudio.CatFood" Version="2.0.0.1" />
+    <PackageReference Include="DuckStudio.CatFood" Version="2.0.0.2" />
     <PackageReference Include="Octokit" Version="14.0.0" />
+    <PackageReference Include="Spectre.Console" Version="0.55.0" />
   </ItemGroup>
 
   <ItemGroup>
