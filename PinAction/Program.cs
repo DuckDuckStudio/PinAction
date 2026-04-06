@@ -1,7 +1,6 @@
 ﻿using Octokit;
 using Spectre.Console;
 using PinAction.Resources;
-using System.Globalization;
 using DuckStudio.CatFood.Functions;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
@@ -94,7 +93,7 @@ namespace PinAction
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine(CultureInfo.CurrentCulture, $"{Print.MSHead.Error} {string.Format(Strings.ErrorPathNotExist, fullPath)}");
+                    AnsiConsole.MarkupLine($"{Print.MSHead.Error} {string.Format(Strings.ErrorPathNotExist, fullPath)}");
                     return 3;
                 }
             }
