@@ -61,7 +61,7 @@ namespace PinAction
                         table.AddRow("Octokit", "[link=https://github.com/octokit/octokit.net/blob/main/LICENSE.txt]MIT License[/]");
                         table.AddRow("DuckStudio.CatFood", "[link=https://github.com/DuckDuckStudio/DuckStudio.CatFood/blob/main/LICENSE]Apache License 2.0[/]");
                         table.AddRow("Spectre.Console", "[link=https://github.com/spectreconsole/spectre.console/blob/main/LICENSE.md]MIT License[/]");
-                        Console.Write(table);
+                        AnsiConsole.Write(table); // 不要改成 Console.Write()
                         return 0;
                 }
             }
