@@ -135,7 +135,7 @@ Because I can't draw. After an hour of thinking, [我已急哭](https://baike.ba
 
 This program is licensed under the [MIT License](https://github.com/DuckDuckStudio/PinAction/blob/main/LICENSE.txt).
 
-### Dependency
+### Dependencies
 
 This program would not have been possible without these projects.  
 Thank you to the open-source community!
