@@ -148,7 +148,7 @@ namespace PinAction
                 }
 
 
-                if (!pinedActions.TryGetValue($"{repo}@{tag}", out string? hash))
+                if (!PinedActions.TryGetValue($"{repo}@{tag}", out string? hash))
                 {
                     // 尝试 tags/{tag} 和 heads/{tag}
                     foreach (string refType in new[] { "tags", "heads" })
@@ -159,7 +159,7 @@ namespace PinAction
                             Reference reference = GitHubClient.Git.Reference.Get(repo.Split('/')[0], repo.Split('/')[1], $"{refType}/{tag}").Result;
                             hash = reference.Object.Sha;
 
-                            pinedActions.TryAdd($"{repo}@{tag}", hash);
+                            PinedActions.TryAdd($"{repo}@{tag}", hash);
                             break;
                         }
                         catch (AggregateException ex) when (ex.InnerException != null)
@@ -233,7 +233,7 @@ namespace PinAction
         /// <para>缓存已固定哈希值的 Action，第二次遇到时不用再去请求 GitHub API 获取。</para>
         /// <para>按 <c>repo@tag</c>, <c>hash</c> 一对存储。</para>
         /// </summary>
-        private static readonly ConcurrentDictionary<string, string> pinedActions = new();
+        private static readonly ConcurrentDictionary<string, string> PinedActions = new();
 
         [GeneratedRegex(@"^\s*uses:\s*([^@]+)@([^@|\s]+)\s*$")]
         private static partial Regex UsesRegex();
