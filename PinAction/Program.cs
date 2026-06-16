@@ -15,7 +15,7 @@ namespace PinAction
         /// </summary>
         /// <param name="args">参数</param>
         /// <returns>退出代码</returns>
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             if (
                 (args.Length == 0) || // 不提供参数
