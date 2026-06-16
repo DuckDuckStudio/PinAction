@@ -110,114 +110,111 @@ namespace PinAction
 
             for (int i = 0; i < lines.Length; i++)
             {
-                if (lines[i].Contains("uses:"))
+                if (!lines[i].Contains("uses:")) continue;
+
+                // 移除注释
+                string[] cleanLinePaths = lines[i].Split('#');
+
+                // 非注释内容匹配正则 "^\s+uses:\s*([^@]+)@([^@|\s]+)\s*$"
+                Match match = UsesRegex().Match(cleanLinePaths[0]);
+                if (!match.Success) continue;
+
+                string repo = match.Groups[1].Value;
+                string tag = match.Groups[2].Value;
+
+                AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.FindAction, Path.GetRelativePath(Environment.CurrentDirectory, path), Markup.Escape($"{repo}@{tag}"))}");
+
+                // 在这里你可以定义排除哪些项
+                // 例如排除以 actions/ 开头的项（actions/*@*）
+                // if (repo.StartsWith("actions/"))
+                // {
+                //     AnsiConsole.MarkupLine($"{Print.MSHead.Warning} 跳过 {repo}@{tag}，因为它是官方工作流");
+                //     continue;
+                // }
+
+
+                // 操作前检查
+                // 检查是否已经是哈希值（40个十六进制字符）
+                if (HashRegex().IsMatch(tag))
                 {
-                    // 移除注释
-                    string[] cleanLinePaths = lines[i].Split('#');
+                    AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.SkippingAlreadyPinnedHashes, Markup.Escape($"{repo}@{tag}"))}");
+                    continue;
+                }
+                // 检查仓库是否是 owner/repo 的格式
+                if (repo.Split('/').Length != 2)
+                {
+                    AnsiConsole.MarkupLine($"{Print.MSHead.Warning} {Markup.Escape(repo)} 看起来不像是仓库的格式，跳过 {Markup.Escape($"{repo}@{tag}")}");
+                    continue;
+                }
 
-                    // 非注释内容匹配正则 "^\s+uses:\s*([^@]+)@([^@|\s]+)\s*$"
-                    Match match = UsesRegex().Match(cleanLinePaths[0]);
 
-                    if (match.Success)
+                if (!pinedActions.TryGetValue($"{repo}@{tag}", out string? hash))
+                {
+                    // 尝试 tags/{tag} 和 heads/{tag}
+                    foreach (string refType in new[] { "tags", "heads" })
                     {
-                        string repo = match.Groups[1].Value;
-                        string tag = match.Groups[2].Value;
-
-                        AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.FindAction, Path.GetRelativePath(Environment.CurrentDirectory, path), Markup.Escape($"{repo}@{tag}"))}");
-
-                        // 在这里你可以定义排除哪些项
-                        // 例如排除以 actions/ 开头的项（actions/*@*）
-                        // if (repo.StartsWith("actions/"))
-                        // {
-                        //     AnsiConsole.MarkupLine($"{Print.MSHead.Warning} 跳过 {repo}@{tag}，因为它是官方工作流");
-                        //     continue;
-                        // }
-
-
-                        // 操作前检查
-                        // 检查是否已经是哈希值（40个十六进制字符）
-                        if (HashRegex().IsMatch(tag))
+                        try
                         {
-                            AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.SkippingAlreadyPinnedHashes, Markup.Escape($"{repo}@{tag}"))}");
-                            continue;
+                            // 获取该版本的 git commit hash
+                            Reference reference = GitHubClient.Git.Reference.Get(repo.Split('/')[0], repo.Split('/')[1], $"{refType}/{tag}").Result;
+                            hash = reference.Object.Sha;
+
+                            pinedActions.TryAdd($"{repo}@{tag}", hash);
+                            break;
                         }
-                        // 检查仓库是否是 owner/repo 的格式
-                        if (repo.Split('/').Length != 2)
+                        catch (AggregateException ex) when (ex.InnerException != null)
                         {
-                            AnsiConsole.MarkupLine($"{Print.MSHead.Warning} {Markup.Escape(repo)} 看起来不像是仓库的格式，跳过 {Markup.Escape($"{repo}@{tag}")}");
-                            continue;
-                        }
+                            AnsiConsole.Markup($"{Print.MSHead.Warning} {Strings.ErrorGetHashFailed}");
 
-
-                        if (!pinedActions.TryGetValue($"{repo}@{tag}", out string? hash))
-                        {
-                            // 尝试 tags/{tag} 和 heads/{tag}
-                            foreach (string refType in new[] { "tags", "heads" })
+                            switch (ex.InnerException)
                             {
-                                try
-                                {
-                                    // 获取该版本的 git commit hash
-                                    Reference reference = GitHubClient.Git.Reference.Get(repo.Split('/')[0], repo.Split('/')[1], $"{refType}/{tag}").Result;
-                                    hash = reference.Object.Sha;
-
-                                    pinedActions.TryAdd($"{repo}@{tag}", hash);
-                                    break;
-                                }
-                                catch (AggregateException ex) when (ex.InnerException != null)
-                                {
-                                    AnsiConsole.Markup($"{Print.MSHead.Warning} {Strings.ErrorGetHashFailed}");
-
-                                    switch (ex.InnerException)
+                                // 还要再试的用 break;
+                                // 最后一次的用 continue;
+                                // 直接整个程序失败的 return false;
+                                case Octokit.NotFoundException:
+                                    if (refType == "tags")
                                     {
-                                        // 还要再试的用 break;
-                                        // 最后一次的用 continue;
-                                        // 直接整个程序失败的 return false;
-                                        case Octokit.NotFoundException:
-                                            if (refType == "tags")
-                                            {
-                                                AnsiConsole.MarkupLineInterpolated($"[yellow]{string.Format(Strings.ErrorTagNotFound, tag)}[/]");
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                AnsiConsole.MarkupLineInterpolated($"[red]{string.Format(Strings.ErrorBranchNotFound, tag, $"{repo}@{tag}")}[/]");
-                                                continue;
-                                            }
-                                        case Octokit.RateLimitExceededException:
-                                            AnsiConsole.MarkupLine($"[yellow]{Strings.ErrorRateLimitExceeded}[/]");
-                                            return false;
-                                        default:
-                                            AnsiConsole.MarkupLineInterpolated($"[red]{ex.InnerException.Message}[/]");
-                                            continue;
+                                        AnsiConsole.MarkupLineInterpolated($"[yellow]{string.Format(Strings.ErrorTagNotFound, tag)}[/]");
+                                        break;
                                     }
-                                }
+                                    else
+                                    {
+                                        AnsiConsole.MarkupLineInterpolated($"[red]{string.Format(Strings.ErrorBranchNotFound, tag, $"{repo}@{tag}")}[/]");
+                                        continue;
+                                    }
+                                case Octokit.RateLimitExceededException:
+                                    AnsiConsole.MarkupLine($"[yellow]{Strings.ErrorRateLimitExceeded}[/]");
+                                    return false;
+                                default:
+                                    AnsiConsole.MarkupLineInterpolated($"[red]{ex.InnerException.Message}[/]");
+                                    continue;
                             }
                         }
-#if DEBUG
-                        else
-                        {
-                            AnsiConsole.MarkupLine($"{Print.MSHead.Debug} 读取缓存 {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
-                        }
-#endif
-
-                        if (hash is null)
-                        {
-                            continue;
-                        }
-
-                        lines[i] = $"{cleanLinePaths[0].Replace($"{repo}@{tag}", $"{repo}@{hash}")} # {tag}";
-                        if (cleanLinePaths.Length > 1)
-                        {
-                            // 将注释部分重新添加到行末
-                            foreach (string commentPart in cleanLinePaths.Skip(1))
-                            {
-                                lines[i] += commentPart;
-                            }
-                        }
-
-                        AnsiConsole.MarkupLine($"{Print.MSHead.Success} {Strings.Pinned} {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
                     }
                 }
+#if DEBUG
+                else
+                {
+                    AnsiConsole.MarkupLine($"{Print.MSHead.Debug} 读取缓存 {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
+                }
+#endif
+
+                if (hash is null)
+                {
+                    continue;
+                }
+
+                lines[i] = $"{cleanLinePaths[0].Replace($"{repo}@{tag}", $"{repo}@{hash}")} # {tag}";
+                if (cleanLinePaths.Length > 1)
+                {
+                    // 将注释部分重新添加到行末
+                    foreach (string commentPart in cleanLinePaths.Skip(1))
+                    {
+                        lines[i] += commentPart;
+                    }
+                }
+
+                AnsiConsole.MarkupLine($"{Print.MSHead.Success} {Strings.Pinned} {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
             }
 
             // 将修改后的内容写回文件
