@@ -149,8 +149,7 @@ namespace PinAction
                         }
 
 
-                        string? hash;
-                        if (!pinedActions.TryGetValue($"{repo}@{tag}", out hash))
+                        if (!pinedActions.TryGetValue($"{repo}@{tag}", out string? hash))
                         {
                             // 尝试 tags/{tag} 和 heads/{tag}
                             foreach (string refType in new[] { "tags", "heads" })
