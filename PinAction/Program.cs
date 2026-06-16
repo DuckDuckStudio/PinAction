@@ -19,14 +19,10 @@ namespace PinAction
         {
             if (
                 (args.Length == 0) || // 不提供参数
-                (
-                    // 单独提供帮助相关参数
-                    (args.Length == 1) &&
-                    (args[0] is "help"
-                             or "--help"
-                             or "-h"
-                             or "/?")
-                )
+                args is ["help"
+                    or "--help"
+                    or "-h"
+                    or "/?"]
             )
             {
                 Console.WriteLine(Strings.Help);
