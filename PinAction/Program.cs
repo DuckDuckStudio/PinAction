@@ -194,7 +194,7 @@ namespace PinAction
 #if DEBUG
                 else
                 {
-                    AnsiConsole.MarkupLine($"{Print.MSHead.Debug} 读取缓存 {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
+                    AnsiConsole.MarkupLine($"{Print.MSHead.Debug} {Strings.ReadCache} {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
                 }
 #endif
 

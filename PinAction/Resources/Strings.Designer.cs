@@ -223,6 +223,15 @@ namespace PinAction.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Read Cache 的本地化字符串。
+        /// </summary>
+        internal static string ReadCache {
+            get {
+                return ResourceManager.GetString("ReadCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Skipping {0} because it is already pinned to the full-length hash. 的本地化字符串。
         /// </summary>
         internal static string SkippingAlreadyPinnedHashes {

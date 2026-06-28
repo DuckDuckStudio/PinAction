@@ -189,6 +189,10 @@
     <value>Pinned</value>
     <comment>已固定</comment>
   </data>
+  <data name="ReadCache" xml:space="preserve">
+    <value>Read Cache</value>
+    <comment>读取缓存时的调试输出</comment>
+  </data>
   <data name="SkippingAlreadyPinnedHashes" xml:space="preserve">
     <value>Skipping {0} because it is already pinned to the full-length hash.</value>
     <comment>跳过已固定到全长哈希的 Action 的提示信息</comment>
