@@ -53,7 +53,7 @@ jobs:
         run: dotnet publish PinAction --configuration Release
 
       - name: 打包安装程序
-        shell: bash
+        shell: pwsh
         run: |-
           Write-Host "通过 GitHub API 下载中文翻译..."
           $apiUrl = "https://api.github.com/repos/jrsoftware/issrc/contents/Files/Languages/ChineseSimplified.isl?ref=main"
