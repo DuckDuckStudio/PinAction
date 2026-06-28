@@ -177,6 +177,10 @@
     <value>License</value>
     <comment>许可（证）</comment>
   </data>
+  <data name="NotARepository" xml:space="preserve">
+    <value>{0} doesn't look like a repository format; skip {1}</value>
+    <comment>看起来不像存储库的</comment>
+  </data>
   <data name="Package" xml:space="preserve">
     <value>Package</value>
     <comment>包</comment>

@@ -142,7 +142,7 @@ namespace PinAction
                 // 检查仓库是否是 owner/repo 的格式
                 if (repo.Split('/').Length != 2)
                 {
-                    AnsiConsole.MarkupLine($"{Print.MSHead.Warning} {Markup.Escape(repo)} 看起来不像是仓库的格式，跳过 {Markup.Escape($"{repo}@{tag}")}");
+                    AnsiConsole.MarkupLine($"{Print.MSHead.Warning} {string.Format(Strings.NotARepository, Markup.Escape(repo), Markup.Escape($"{repo}@{tag}"))}");
                     continue;
                 }
 

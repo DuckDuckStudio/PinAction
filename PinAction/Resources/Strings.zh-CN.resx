@@ -162,6 +162,9 @@
   <data name="License" xml:space="preserve">
     <value>许可（证）</value>
   </data>
+  <data name="NotARepository" xml:space="preserve">
+    <value>{0} 看起来不像是仓库的格式，跳过 {1}</value>
+  </data>
   <data name="Package" xml:space="preserve">
     <value>包</value>
   </data>
