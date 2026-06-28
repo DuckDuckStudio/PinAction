@@ -196,6 +196,15 @@ namespace PinAction.Resources {
         }
         
         /// <summary>
+        ///   查找类似 {0} doesn&apos;t look like a repository format; skip {1} 的本地化字符串。
+        /// </summary>
+        internal static string NotARepository {
+            get {
+                return ResourceManager.GetString("NotARepository", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Package 的本地化字符串。
         /// </summary>
         internal static string Package {
@@ -210,6 +219,15 @@ namespace PinAction.Resources {
         internal static string Pinned {
             get {
                 return ResourceManager.GetString("Pinned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Read Cache 的本地化字符串。
+        /// </summary>
+        internal static string ReadCache {
+            get {
+                return ResourceManager.GetString("ReadCache", resourceCulture);
             }
         }
         

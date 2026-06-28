@@ -162,11 +162,17 @@
   <data name="License" xml:space="preserve">
     <value>许可（证）</value>
   </data>
+  <data name="NotARepository" xml:space="preserve">
+    <value>{0} 看起来不像是仓库的格式，跳过 {1}</value>
+  </data>
   <data name="Package" xml:space="preserve">
     <value>包</value>
   </data>
   <data name="Pinned" xml:space="preserve">
     <value>已固定</value>
+  </data>
+  <data name="ReadCache" xml:space="preserve">
+    <value>读取缓存</value>
   </data>
   <data name="SkippingAlreadyPinnedHashes" xml:space="preserve">
     <value>跳过 {0}，因为它已经固定到全长哈希值。</value>
