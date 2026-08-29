@@ -39,10 +39,10 @@ cd PinAction/
 这里的示例使用 Release 生成配置，指定目标操作系统 linux，单文件，自包含运行时。
 
 ```shell
-dotnet publish PinAction --configuration Release --os linux -p:PublishSingleFile=true --self-contained
+dotnet publish src/PinAction/PinAction.csproj --configuration Release --os linux -p:PublishSingleFile=true --self-contained
 
 # 对于喜欢用小写的人
-mv "PinAction/bin/Release/net10.0/linux-x64/publish/PinAction" "PinAction/bin/Release/net10.0/linux-x64/publish/pinaction"
+mv "src/PinAction/bin/Release/net10.0/linux-x64/publish/PinAction" "src/PinAction/bin/Release/net10.0/linux-x64/publish/pinaction"
 ```
 
 #### 添加到 PATH
