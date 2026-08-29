@@ -98,10 +98,10 @@ namespace PinAction
         }
 
         /// <summary>
-        /// 固定工作流版本到全长哈希。
+        /// 扫描指定的工作流文件，并将其中的 <c>uses:</c> 引用固定为对应提交的哈希值。
         /// </summary>
-        /// <param name="path">工作流文件路径</param>
-        /// <returns>是否成功</returns>
+        /// <param name="path">要处理的 YAML / YML 工作流文件路径。</param>
+        /// <returns>若文件处理成功返回 <see langword="true"/>；失败返回 <see langword="false"/>。</returns>
         private static bool PinActionHash(string path)
         {
             // 读取文件内容，并按行分隔
@@ -139,6 +139,7 @@ namespace PinAction
                     AnsiConsole.MarkupLine($"{Print.MSHead.Information} {string.Format(Strings.SkippingAlreadyPinnedHashes, Markup.Escape($"{repo}@{tag}"))}");
                     continue;
                 }
+
                 // 检查仓库是否是 owner/repo 的格式
                 if (repo.Split('/').Length != 2)
                 {
@@ -203,7 +204,8 @@ namespace PinAction
                     continue;
                 }
 
-                lines[i] = $"{cleanLinePaths[0].Replace($"{repo}@{tag}", $"{repo}@{hash}")} # {tag}";
+                string refinedTag = ResolveRefinedTag(repo, tag, hash);
+                lines[i] = $"{cleanLinePaths[0].Replace($"{repo}@{tag}", $"{repo}@{hash}")} # {refinedTag}";
                 if (cleanLinePaths.Length > 1)
                 {
                     // 将注释部分重新添加到行末
@@ -213,7 +215,7 @@ namespace PinAction
                     }
                 }
 
-                AnsiConsole.MarkupLine($"{Print.MSHead.Success} {Strings.Pinned} {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(tag)}");
+                AnsiConsole.MarkupLine($"{Print.MSHead.Success} {Strings.Pinned} {Markup.Escape($"{repo}@{hash}")} # {Markup.Escape(refinedTag)}");
             }
 
             // 将修改后的内容写回文件
@@ -221,6 +223,76 @@ namespace PinAction
             return true;
         }
 
+        /// <summary>
+        /// 根据目标提交哈希尝试找回与该提交关联的更合适版本标签。
+        /// </summary>
+        /// <param name="repo">仓库名称，格式为 <c>owner/repo</c>。</param>
+        /// <param name="tag">原始引用的版本或分支名称。</param>
+        /// <param name="hash">对应的提交 SHA，通常为 40 位十六进制值。</param>
+        /// <returns>若能在目标仓库中找到与提交 SHA 对应的标签，则返回最合适的标签名；否则返回原始 <paramref name="tag"/>。</returns>
+        private static string ResolveRefinedTag(string repo, string tag, string hash)
+        {
+            if (string.IsNullOrWhiteSpace(tag) || string.IsNullOrWhiteSpace(hash))
+            {
+                return tag;
+            }
+
+            string[] repoParts = repo.Split('/', 2, StringSplitOptions.TrimEntries);
+            if (repoParts.Length != 2)
+            {
+                return tag;
+            }
+
+            try
+            {
+                IReadOnlyList<RepositoryTag> tags = GitHubClient.Repository.GetAllTags(repoParts[0], repoParts[1]).Result;
+                if (tags.Count == 0)
+                {
+                    return tag;
+                }
+
+                RepositoryTag? sameCommitTag = tags
+                    .Where(t => string.Equals(t.Commit.Sha, hash, StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(t => t.Name, Comparer<string>.Create(CompareVersionStrings))
+                    .FirstOrDefault();
+
+                return sameCommitTag is not null ? sameCommitTag.Name : tag;
+            }
+            catch
+            {
+                return tag;
+            }
+        }
+
+        /// <summary>
+        /// 比较两个版本字符串，按数字段顺序进行自然排序。
+        /// </summary>
+        /// <param name="left">左侧版本字符串。</param>
+        /// <param name="right">右侧版本字符串。</param>
+        /// <returns>若 <paramref name="left"/> 小于 <paramref name="right"/> 返回负数；相等返回 0；大于返回正数。</returns>
+        private static int CompareVersionStrings(string left, string right)
+        {
+            int[] leftParts = [.. NumberRegex().Matches(left).Select(m => int.Parse(m.Value))];
+            int[] rightParts = [.. NumberRegex().Matches(right).Select(m => int.Parse(m.Value))];
+            int maxLen = Math.Max(leftParts.Length, rightParts.Length);
+
+            for (int i = 0; i < maxLen; i++)
+            {
+                int leftPart = i < leftParts.Length ? leftParts[i] : 0;
+                int rightPart = i < rightParts.Length ? rightParts[i] : 0;
+                int result = leftPart.CompareTo(rightPart);
+                if (result != 0)
+                {
+                    return result;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// GitHub API 客户端。
+        /// </summary>
         private static readonly GitHubClient GitHubClient = new(new ProductHeaderValue("PinAction"))
         {
             // 如果你想让请求使用 GitHub Token，可以将 Token 临时填在这里
@@ -229,15 +301,30 @@ namespace PinAction
         };
 
         /// <summary>
-        /// <para>缓存已固定哈希值的 Action，第二次遇到时不用再去请求 GitHub API 获取。</para>
-        /// <para>按 <c>repo@tag</c>, <c>hash</c> 一对存储。</para>
+        /// <para>缓存已固定哈希值的 Action，避免同一 <c>repo@tag</c> 重复调用 GitHub API。</para>
+        /// <para>键为 <c>repo@tag</c>，值为对应的提交 SHA。</para>
         /// </summary>
         private static readonly ConcurrentDictionary<string, string> PinedActions = new();
 
+        /// <summary>
+        /// 匹配工作流中的 <c>uses:</c> 引用，提取仓库名和对应版本或分支名。
+        /// </summary>
+        /// <returns>用于解析 <c>owner/repo@ref</c> 形式的正则对象。</returns>
         [GeneratedRegex(@"^\s*uses:\s*([^@]+)@([^@|\s]+)\s*$")]
         private static partial Regex UsesRegex();
 
+        /// <summary>
+        /// 判断给定字符串是否为 40 位十六进制提交哈希。
+        /// </summary>
+        /// <returns>用于验证 SHA-1 哈希格式的正则对象。</returns>
         [GeneratedRegex(@"^[a-fA-F0-9]{40}$")]
         private static partial Regex HashRegex();
+
+        /// <summary>
+        /// 匹配版本字符串中的数字段，供自然排序比较版本号时使用。
+        /// </summary>
+        /// <returns>用于提取版本号中的数字序列的正则对象。</returns>
+        [GeneratedRegex(@"\d+")]
+        private static partial Regex NumberRegex();
     }
 }
