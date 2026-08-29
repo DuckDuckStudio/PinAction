@@ -19,37 +19,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Commands\**" />
-    <EmbeddedResource Remove="Commands\**" />
-    <None Remove="Commands\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="DuckStudio.CatFood" Version="2.0.0.7" />
     <PackageReference Include="Octokit" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\README.md">
-      <PackagePath>\</PackagePath>
+    <None Include="../../README.md">
+      <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\README.zh-CN.md">
-      <PackagePath>\</PackagePath>
+    <None Include="../../README.zh-CN.md">
+      <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\LICENSE.txt">
-      <PackagePath>\</PackagePath>
+    <None Include="../../LICENSE.txt">
+      <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\NOTICE.md">
-      <PackagePath>\</PackagePath>
+    <None Include="../../NOTICE.md">
+      <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Strings.Designer.cs">
+    <Compile Update="Resources/Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
@@ -57,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Strings.resx">
+    <EmbeddedResource Update="Resources/Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>

@@ -39,10 +39,10 @@ cd PinAction/
 The example here uses the Release build configuration, specifying the target operating system as Linux, single file, and self-contained runtime.
 
 ```shell
-dotnet publish PinAction --configuration Release --os linux -p:PublishSingleFile=true --self-contained
+dotnet publish src/PinAction/PinAction.csproj --configuration Release --os linux -p:PublishSingleFile=true --self-contained
 
 # For those who like to use lowercase ...
-mv "PinAction/bin/Release/net10.0/linux-x64/publish/PinAction" "PinAction/bin/Release/net10.0/linux-x64/publish/pinaction"
+mv "src/PinAction/bin/Release/net10.0/linux-x64/publish/PinAction" "src/PinAction/bin/Release/net10.0/linux-x64/publish/pinaction"
 ```
 
 #### Add to PATH

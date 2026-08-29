@@ -11,13 +11,13 @@
 > 项目中有一个工作流文件 [.github/workflows/release.yaml](.github/workflows/release.yaml) 可以用来自动构建。  
 
 ```bash
-dotnet publish PinAction --configuration Release
+dotnet publish src/PinAction/PinAction.csproj --configuration Release
 ```
 
 或者使用 [Visual Studio](https://visualstudio.microsoft.com/) 生成。
 
 ## 本地化
-如果你想修改本地化内容，_可以_ 用 [Visual Studio](https://visualstudio.microsoft.com/) 打开 `PinAction/PinAction.slnx`，然后打开项目中的 `Resources/Strings.resx`，在那里编辑现有本地化内容。  
+如果你想修改本地化内容，_可以_ 用 [Visual Studio](https://visualstudio.microsoft.com/) 打开 `src/PinAction.slnx`，然后打开项目中的 `Resources/Strings.resx`，在那里编辑现有本地化内容。  
 如果你想新增本地化语言，请添加 `Resources/Strings.<区域代码>.resx` 文件。
 
 请基于 `zh-CN` (简体中文) 进行翻译。
