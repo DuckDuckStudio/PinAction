@@ -33,7 +33,7 @@ jobs:
 
       - name: 发布
         shell: pwsh
-        run: dotnet publish src/PinAction.csproj --configuration Release
+        run: dotnet publish src/PinAction/PinAction.csproj --configuration Release
 
       - name: (Windows) 添加发布目录到 PATH
         if: ${{ runner.os == 'Windows' }}

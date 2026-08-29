@@ -50,7 +50,7 @@ jobs:
           python ".scripts/update_version.py" "$version"
 
       - name: 发布
-        run: dotnet publish src/PinAction.csproj --configuration Release
+        run: dotnet publish src/PinAction/PinAction.csproj --configuration Release
 
       - name: 打包安装程序
         shell: pwsh
