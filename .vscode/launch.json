@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ReSharper: 启动 PinAction.csproj 项目",
+            "type": "dotnet",
+            "request": "launch",
+            "args": [
+                "${workspaceFolder}/tests/file.yaml"
+            ],
+            "projectPath": "${workspaceFolder}/src/PinAction/PinAction.csproj"
+        }
+    ]
+}
