@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DuckStudio.CatFood" Version="2.0.0.7" />
+    <PackageReference Include="DuckStudio.CatFood" Version="2.0.0.8" />
     <PackageReference Include="Octokit" Version="14.0.0" />
   </ItemGroup>
 
