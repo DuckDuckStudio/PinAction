@@ -113,6 +113,12 @@ namespace PinAction.Resources {
                 return ResourceManager.GetString("ErrorTagNotFound", resourceCulture);
             }
         }
+
+        internal static string ErrorReferenceNotCommit {
+            get {
+                return ResourceManager.GetString("ErrorReferenceNotCommit", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   查找类似 Found [blue]{1}[/] in [blue]{0}[/] 的本地化字符串。

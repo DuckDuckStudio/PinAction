@@ -172,7 +172,7 @@ namespace PinAction
                             if (gitObject.Type.Value != TaggedType.Commit)
                             {
                                 AnsiConsole.MarkupLineInterpolated(
-                                    $"[red]Reference '{tag}' does not resolve to a commit.[/]");
+                                    $"[red]{string.Format(Strings.ErrorReferenceNotCommit, Markup.Escape(tag))}[/]");
                                 continue;
                             }
 

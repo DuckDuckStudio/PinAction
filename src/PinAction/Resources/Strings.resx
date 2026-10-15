@@ -137,6 +137,10 @@
     <value>The repository {0} does not exist.</value>
     <comment>存储库不存在的错误信息</comment>
   </data>
+  <data name="ErrorReferenceNotCommit" xml:space="preserve">
+    <value>Reference '{0}' does not resolve to a commit.</value>
+    <comment>Error shown when a tag or reference does not point to a commit.</comment>
+  </data>
   <data name="ErrorTagNotFound" xml:space="preserve">
     <value>Tag {0} not found, maybe this is a branch reference? I'll give it a try...</value>
     <comment>未找到标签引用的提示信息</comment>
