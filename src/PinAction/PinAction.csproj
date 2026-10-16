@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="PinAction.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="../../README.md">
       <PackagePath>/</PackagePath>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
