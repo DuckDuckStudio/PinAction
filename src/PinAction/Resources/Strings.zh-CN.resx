@@ -132,6 +132,9 @@
   <data name="ErrorRepositoryNotExist" xml:space="preserve">
     <value>存储库 {0} 不存在。</value>
   </data>
+  <data name="ErrorReferenceNotCommit" xml:space="preserve">
+    <value>引用 '{0}' 无法解析为提交。</value>
+  </data>
   <data name="ErrorTagNotFound" xml:space="preserve">
     <value>未找到标签 {0}，也许这是分支引用？我试试看...</value>
   </data>

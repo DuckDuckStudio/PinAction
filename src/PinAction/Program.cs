@@ -156,9 +156,27 @@ namespace PinAction
                         try
                         {
                             // 获取该版本的 git commit hash
-                            Reference reference = GitHubClient.Git.Reference.Get(repo.Split('/')[0], repo.Split('/')[1], $"{refType}/{tag}").Result;
-                            hash = reference.Object.Sha;
 
+                            string owner = repo.Split('/')[0];
+                            string repository = repo.Split('/')[1];
+
+                            Reference reference = GitHubClient.Git.Reference.Get(owner, repository, $"{refType}/{tag}").Result;
+                            TagObject gitObject = reference.Object;
+
+                            while (gitObject.Type.Value == TaggedType.Tag)
+                            {
+                                GitTag gitTag = GitHubClient.Git.Tag.Get(owner, repository, gitObject.Sha).Result;
+                                gitObject = gitTag.Object;
+                            }
+
+                            if (gitObject.Type.Value != TaggedType.Commit)
+                            {
+                                AnsiConsole.MarkupLineInterpolated(
+                                    $"[red]{string.Format(Strings.ErrorReferenceNotCommit, Markup.Escape(tag))}[/]");
+                                continue;
+                            }
+
+                            hash = gitObject.Sha;
                             PinedActions.TryAdd($"{repo}@{tag}", hash);
                             break;
                         }
