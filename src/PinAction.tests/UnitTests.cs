@@ -70,10 +70,7 @@ namespace PinAction.Tests
             Program.GitHubClient = _githubClient.Object;
         }
 
-        /// <summary>
-        /// 测试 CompareVersionStrings 方法是否按自然顺序比较版本字符串。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "CompareVersionStrings 方法应按自然顺序比较版本字符串")]
         public void CompareVersionStrings_OrdersNumericSegmentsNaturally()
         {
             Assert.True(Program.CompareVersionStrings("v1.9.0", "v1.10.0") < 0);
@@ -81,10 +78,7 @@ namespace PinAction.Tests
             Assert.Equal(0, Program.CompareVersionStrings("release-1.2", "v1.2.0"));
         }
 
-        /// <summary>
-        /// 测试 ResolveRefinedTag 方法是否返回与提交匹配的最高版本标签。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "ResolveRefinedTag 方法应返回与提交匹配的最高版本标签")]
         public void ResolveRefinedTag_ReturnsHighestVersionForMatchingCommit()
         {
             _repositories
@@ -102,10 +96,7 @@ namespace PinAction.Tests
             _repositories.Verify(client => client.GetAllTags("owner", "repo"), Times.Once);
         }
 
-        /// <summary>
-        /// 测试 ResolveRefinedTag 方法是否在提交没有匹配标签时返回原始标签。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "ResolveRefinedTag 方法应在提交没有匹配标签时返回原始标签")]
         public void ResolveRefinedTag_ReturnsOriginalTagWhenCommitHasNoMatchingTag()
         {
             _repositories
@@ -120,10 +111,7 @@ namespace PinAction.Tests
             Assert.Equal("main", result);
         }
 
-        /// <summary>
-        /// 测试 PinActionHash 方法是否正确固定引用并保留内联注释。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "PinActionHash 方法应正确固定引用并保留内联注释")]
         public void PinActionHash_PinsReferencesAndPreservesInlineComments()
         {
             string path = Path.Combine(_temporaryDirectory, "workflow.yml");
@@ -164,10 +152,7 @@ namespace PinAction.Tests
             _repositories.Verify(client => client.GetAllTags("owner", "repo"), Times.Once);
         }
 
-        /// <summary>
-        /// 测试 PinActionHash 方法是否将附注标签对象解析为其目标提交哈希。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "PinActionHash 方法应将附注标签对象解析为其目标提交哈希")]
         public void PinActionHash_ResolvesAnnotatedTagToCommitHash()
         {
             const string tagObjectSha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -191,10 +176,7 @@ namespace PinAction.Tests
             _tags.Verify(client => client.Get("owner", "repo", tagObjectSha), Times.Once);
         }
 
-        /// <summary>
-        /// 测试 PinActionHash 方法是否跳过最终目标不是提交的附注标签。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "PinActionHash 方法应跳过最终目标不是提交的附注标签")]
         public void PinActionHash_SkipsAnnotatedTagWhenResolvedTargetIsNotCommit()
         {
             const string tagObjectSha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -221,10 +203,7 @@ namespace PinAction.Tests
                 It.IsAny<string>()), Times.Never);
         }
 
-        /// <summary>
-        /// 测试 PinActionHash 方法是否跳过已固定的和无效的仓库引用。
-        /// </summary>
-        [Fact]
+        [Fact(DisplayName = "PinActionHash 方法应跳过已固定的和无效的仓库引用")]
         public void PinActionHash_SkipsAlreadyPinnedAndInvalidRepositoryReferences()
         {
             string path = Path.Combine(_temporaryDirectory, "workflow.yml");
