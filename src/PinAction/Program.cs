@@ -102,7 +102,7 @@ namespace PinAction
         /// </summary>
         /// <param name="path">要处理的 YAML / YML 工作流文件路径。</param>
         /// <returns>若文件处理成功返回 <see langword="true"/>；失败返回 <see langword="false"/>。</returns>
-        private static bool PinActionHash(string path)
+        internal static bool PinActionHash(string path)
         {
             // 读取文件内容，并按行分隔
             string[] lines = File.ReadAllLines(path);
@@ -248,7 +248,7 @@ namespace PinAction
         /// <param name="tag">原始引用的版本或分支名称。</param>
         /// <param name="hash">对应的提交 SHA，通常为 40 位十六进制值。</param>
         /// <returns>若能在目标仓库中找到与提交 SHA 对应的标签，则返回最合适的标签名；否则返回原始 <paramref name="tag"/>。</returns>
-        private static string ResolveRefinedTag(string repo, string tag, string hash)
+        internal static string ResolveRefinedTag(string repo, string tag, string hash)
         {
             if (string.IsNullOrWhiteSpace(tag) || string.IsNullOrWhiteSpace(hash))
             {
@@ -288,7 +288,7 @@ namespace PinAction
         /// <param name="left">左侧版本字符串。</param>
         /// <param name="right">右侧版本字符串。</param>
         /// <returns>若 <paramref name="left"/> 小于 <paramref name="right"/> 返回负数；相等返回 0；大于返回正数。</returns>
-        private static int CompareVersionStrings(string left, string right)
+        internal static int CompareVersionStrings(string left, string right)
         {
             int[] leftParts = [.. NumberRegex().Matches(left).Select(m => int.Parse(m.Value))];
             int[] rightParts = [.. NumberRegex().Matches(right).Select(m => int.Parse(m.Value))];
@@ -311,7 +311,7 @@ namespace PinAction
         /// <summary>
         /// GitHub API 客户端。
         /// </summary>
-        private static readonly GitHubClient GitHubClient = new(new ProductHeaderValue("PinAction"))
+        internal static IGitHubClient GitHubClient { get; set; } = new GitHubClient(new ProductHeaderValue("PinAction"))
         {
             // 如果你想让请求使用 GitHub Token，可以将 Token 临时填在这里
             // 记得用完后 撤销/删除/轮换 Token。
@@ -322,7 +322,7 @@ namespace PinAction
         /// <para>缓存已固定哈希值的 Action，避免同一 <c>repo@tag</c> 重复调用 GitHub API。</para>
         /// <para>键为 <c>repo@tag</c>，值为对应的提交 SHA。</para>
         /// </summary>
-        private static readonly ConcurrentDictionary<string, string> PinedActions = new();
+        internal static readonly ConcurrentDictionary<string, string> PinedActions = new();
 
         /// <summary>
         /// 匹配工作流中的 <c>uses:</c> 引用，提取仓库名和对应版本或分支名。
