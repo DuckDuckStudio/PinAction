@@ -175,7 +175,7 @@ namespace PinAction.Tests
             bool succeeded = Program.PinActionHash(path);
 
             Assert.True(succeeded);
-            Assert.Equal($"      uses: owner/repo@{CommitSha} # v1", File.ReadAllText(path).TrimEnd('\r', '\n'));
+            Assert.Equal($"      uses: owner/repo@{CommitSha}  # v1", File.ReadAllText(path).TrimEnd('\r', '\n'));
             _tags.Verify(client => client.Get("owner", "repo", tagObjectSha), Times.Once);
         }
 
