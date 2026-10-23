@@ -112,10 +112,10 @@ namespace PinAction
                 if (!lines[i].Contains("uses:")) continue;
 
                 // 移除注释
-                string[] cleanLinePaths = lines[i].Split('#');
+                string[] linePaths = lines[i].Split('#');
 
                 // 非注释内容匹配正则 "^\s+uses:\s*([^@]+)@([^@|\s]+)\s*$"
-                Match match = UsesRegex().Match(cleanLinePaths[0]);
+                Match match = UsesRegex().Match(linePaths[0]);
                 if (!match.Success) continue;
 
                 string repo = match.Groups[1].Value;
@@ -205,11 +205,12 @@ namespace PinAction
                 }
 
                 string refinedTag = ResolveRefinedTag(repo, tag, hash);
-                lines[i] = $"{cleanLinePaths[0].Replace($"{repo}@{tag}", $"{repo}@{hash}")} # {refinedTag}";
-                if (cleanLinePaths.Length > 1)
+                string spacesBeforeComment = linePaths[0].EndsWith(' ') ? "" : "  ";
+                lines[i] = $"{linePaths[0].Replace($"{repo}@{tag}", $"{repo}@{hash}")}{spacesBeforeComment}# {refinedTag}";
+                if (linePaths.Length > 1)
                 {
                     // 将注释部分重新添加到行末
-                    foreach (string commentPart in cleanLinePaths.Skip(1))
+                    foreach (string commentPart in linePaths.Skip(1))
                     {
                         lines[i] += commentPart;
                     }
