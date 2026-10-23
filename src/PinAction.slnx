@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="PinAction.tests/PinAction.tests.csproj" />
+  <Project Path="PinAction.Tests/PinAction.Tests.csproj" />
   <Project Path="PinAction/PinAction.csproj" />
 </Solution>
