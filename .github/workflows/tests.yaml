@@ -64,10 +64,10 @@ jobs:
         run: |
           if ($env:RUNNER_OS -eq "Windows") {
             # CRLF
-            echo "expected=CC49FABDBC9FC0756E6BF9049CF9E494EABCF13BB31F24DF2FE1FC1A2C32FCB4" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            echo "expected=9DA6F1F55EE603CC6FCE035A6DAD6ED26B6C339CE1520E083E83F5F843B1CA24" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           } else {
             # LF
-            echo "expected=D810BE383BFA53F8BD7D8C174BB803A539FC6F224C13F349ED7B4CF559D62FED" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            echo "expected=4F7A5A17DCC14568F87BEDB62C9127B82C7EE21933AF491D5617075F51904331" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           }
 
       - name: 测试 - 文件

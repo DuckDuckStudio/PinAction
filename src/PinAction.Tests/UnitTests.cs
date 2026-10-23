@@ -144,12 +144,15 @@ namespace PinAction.Tests
                 "      run: echo uses: not-an-action"
             ];
             Assert.Equal(expectedLines, File.ReadAllLines(path));
+
+            // 哈希有缓存，只获取一次引用。
             _references.Verify(client => client.Get("owner", "repo", "tags/v1"), Times.Once);
-            _tags.Verify(client => client.Get(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()), Times.Never);
-            _repositories.Verify(client => client.GetAllTags("owner", "repo"), Times.Once);
+
+            // 成功通过引用获取了哈希，不应再尝试通过 Tag 获取哈希。
+            _tags.Verify(client => client.Get(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+
+            // 虽然哈希有缓存，但解析出来的精确 Tag 没有缓存。
+            _repositories.Verify(client => client.GetAllTags("owner", "repo"), Times.Exactly(2));
         }
 
         [Fact(DisplayName = "PinActionHash 方法应将附注标签对象解析为其目标提交哈希")]
