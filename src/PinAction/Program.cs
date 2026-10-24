@@ -171,9 +171,8 @@ namespace PinAction
 
                             if (gitObject.Type.Value != TaggedType.Commit)
                             {
-                                AnsiConsole.MarkupLineInterpolated(
-                                    $"[red]{string.Format(Strings.ErrorReferenceNotCommit, Markup.Escape(tag))}[/]");
-                                continue;
+                                AnsiConsole.MarkupLine($"{Print.MSHead.Warning} [red]{Markup.Escape(string.Format(Strings.ErrorReferenceNotCommit, tag, $"{repo}@{tag}"))}[/]");
+                                return false;
                             }
 
                             hash = gitObject.Sha;
