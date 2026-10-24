@@ -97,6 +97,15 @@ namespace PinAction.Resources {
         }
         
         /// <summary>
+        ///   查找类似 The reference {0} did not resolve to a commit; skipping {1}. 的本地化字符串。
+        /// </summary>
+        internal static string ErrorReferenceNotCommit {
+            get {
+                return ResourceManager.GetString("ErrorReferenceNotCommit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 The repository {0} does not exist. 的本地化字符串。
         /// </summary>
         internal static string ErrorRepositoryNotExist {
@@ -196,7 +205,7 @@ namespace PinAction.Resources {
         }
         
         /// <summary>
-        ///   查找类似 {0} doesn&apos;t look like a repository format; skip {1} 的本地化字符串。
+        ///   查找类似 {0} doesn&apos;t look like a repository format; skipping {1} 的本地化字符串。
         /// </summary>
         internal static string NotARepository {
             get {

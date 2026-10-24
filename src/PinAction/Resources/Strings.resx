@@ -137,6 +137,10 @@
     <value>The repository {0} does not exist.</value>
     <comment>存储库不存在的错误信息</comment>
   </data>
+  <data name="ErrorReferenceNotCommit" xml:space="preserve">
+    <value>The reference {0} did not resolve to a commit; skipping {1}.</value>
+    <comment>在引用最终不是指向提交时显示的错误信息</comment>
+  </data>
   <data name="ErrorTagNotFound" xml:space="preserve">
     <value>Tag {0} not found, maybe this is a branch reference? I'll give it a try...</value>
     <comment>未找到标签引用的提示信息</comment>
@@ -178,7 +182,7 @@
     <comment>许可（证）</comment>
   </data>
   <data name="NotARepository" xml:space="preserve">
-    <value>{0} doesn't look like a repository format; skip {1}</value>
+    <value>{0} doesn't look like a repository format; skipping {1}</value>
     <comment>看起来不像存储库的</comment>
   </data>
   <data name="Package" xml:space="preserve">
